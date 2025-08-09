@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gut Health & Seasonal Food Tracker | Smart Plate AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cae;
+            --accent-color: #ff7e5f;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gut-health-color: #6bbaa7;
+            --seasonal-color: #f6c667;
+            --water-color: #4a90e2;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .hero-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--gut-health-color);
+            margin-bottom: 1rem;
+        }
+        
+        .tracker-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--gut-health-color);
+            border-color: var(--gut-health-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #4a9e8a;
+            border-color: #4a9e8a;
+        }
+        
+        .gut-feeling-btn {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #eee;
+            background: white;
+            transition: all 0.3s;
+            margin: 5px;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .gut-feeling-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .gut-feeling-btn.selected {
+            border-color: var(--gut-health-color);
+            background-color: rgba(107, 186, 167, 0.1);
+        }
+        
+        .microbiome-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gut-health-color);
+        }
+        
+        .progress.microbiome-progress {
+            height: 15px;
+            border-radius: 8px;
+        }
+        
+        .progress-bar.microbiome-progress-bar {
+            background-color: var(--gut-health-color);
+        }
+        
+        .seasonal-produce-card {
+            border-left: 4px solid var(--seasonal-color);
+            transition: all 0.3s;
+        }
+        
+        .seasonal-produce-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Animation for microbiome score */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Seasonal chart styles */
+        .seasonal-chart-container {
+            height: 400px;
+            margin-bottom: 2rem;
+        }
+        
+        /* Microbiome section styles */
+        .microbiome-food-option {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .microbiome-food-option:hover {
+            background-color: rgba(107, 186, 167, 0.1);
+            border-color: var(--gut-health-color);
+        }
+        
+        .microbiome-food-option.selected {
+            background-color: rgba(107, 186, 167, 0.2);
+            border-color: var(--gut-health-color);
+        }
+        
+        .result-card {
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .good-result {
+            background-color: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid #28a745;
+        }
+        
+        .bad-result {
+            background-color: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Location input styles */
+        .location-input {
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Dashboard improvements */
+        .dashboard-card {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+        }
+        
+        /* Health percentage styles */
+        .health-percentage {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gut-health-color);
+        }
+        
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        /* Food category colors */
+        .food-category-grains { background-color: #f6c667; }
+        .food-category-vegetables { background-color: #6bbaa7; }
+        .food-category-fruits { background-color: #ff7e5f; }
+        .food-category-protein { background-color: #4a6fa5; }
+        .food-category-dairy { background-color: #b08ea2; }
+        .food-category-other { background-color: #9d9d9d; }
+        
+        /* Model badges */
+        .model-badge {
+            font-size: 0.75rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        /* Recommendation card */
+        .recommendation-card {
+            border-left: 4px solid var(--gut-health-color);
+            transition: all 0.3s;
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Water visualization */
+        .body-visualization {
+            position: relative;
+            width: 200px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        
+        .body-outline {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 200"><path d="M50,5 C60,5 70,15 70,25 C70,35 60,45 50,45 C40,45 30,35 30,25 C30,15 40,5 50,5 Z M30,45 L35,50 L40,45 L45,50 L50,45 L55,50 L60,45 L65,50 L70,45 L70,180 C70,190 60,200 50,200 C40,200 30,190 30,180 Z" fill="none" stroke="%23343a40" stroke-width="1"/></svg>') no-repeat center center;
+            background-size: contain;
+        }
+        
+        .water-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--water-color);
+            opacity: 0.6;
+            transition: height 1s ease;
+            border-radius: 0 0 50px 50px;
+        }
+        
+        .water-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--water-color);
+        }
+        
+        /* Nutritional info cards */
+        .nutrition-card {
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nutrition-card .nutrient {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        /* Food category badges */
+        .category-badge {
+            font-size: 0.7rem;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-gut me-2"></i>Gut Health & Seasonal Food Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#seasonal">Seasonal Foods</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#microbiome">Microbiome Score</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tracker">Gut Tracker</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#water">Water Intake</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#recommendations">Recommendations</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container hero-section">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Listen to Your Gut</h1>
+                <p class="lead mb-4">Track how foods make you feel and discover seasonal, local foods that support your gut health.</p>
+                <div class="d-flex gap-3">
+                    <a href="#tracker" class="btn btn-primary btn-lg px-4">Start Tracking</a>
+                    <a href="#seasonal" class="btn btn-outline-secondary btn-lg px-4">Seasonal Foods</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Healthy gut foods" class="img-fluid rounded">
+            </div>
+        </div>
+    </section>
+
+    <section id="seasonal" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-leaf me-2"></i>Seasonal & Local Food Guide</h2>
+        <p class="text-center mb-4">Discover what's in season in your area for optimal freshness, nutrition, and sustainability.</p>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-map-marker-alt me-2"></i>Find Local Seasonal Foods</h5>
+                        <div class="location-input">
+                            <label class="form-label">Enter your state to see seasonal recommendations:</label>
+                            <div class="input-group">
+                                <select class="form-select" id="stateSelect">
+                                    <option value="" selected disabled>Select a state...</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                                <button class="btn btn-primary" type="button" onclick="loadSeasonalFoods()">
+                                    <i class="fas fa-search"></i> Find Foods
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="seasonal-chart-container" id="seasonalChartContainer" style="display: none;">
+            <canvas id="seasonalChart"></canvas>
+        </div>
+        
+        <div id="seasonalRecommendations" class="row mt-4" style="display: none;">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-carrot me-2"></i>Best Vegetables Right Now</h5>
+                        <div id="vegetableList" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-apple-alt me-2"></i>Best Fruits Right Now</h5>
+                        <div id="fruitList" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="microbiome" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-bacteria me-2"></i>Microbiome-Friendly Score</h2>
+        <p class="text-center mb-4">Select foods you've eaten to see how they support your gut microbiome.</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-4">
+                    <h5 class="mb-3"><i class="fas fa-utensils me-2"></i>Select Gut-Healthy Foods</h5>
+                    <div id="microbiomeFoodOptions">
+                        <div class="microbiome-food-option" onclick="selectMicrobiomeFood(this, 'fermented')">
+                            <h6>Fermented Foods</h6>
+                            <p class="small text-muted">Yogurt, kefir, kimchi, sauerkraut, miso, tempeh, kombucha</p>
+                        </div>
+                        <div class="microbiome-food-option" onclick="selectMicrobiomeFood(this, 'highfiber')">
+                            <h6>High-Fiber Foods</h6>
+                            <p class="small text-muted">Whole grains, legumes, vegetables, fruits, nuts, seeds</p>
+                        </div>
+                        <div class="microbiome-food-option" onclick="selectMicrobiomeFood(this, 'polyphenols')">
+                            <h6>Polyphenol-Rich Foods</h6>
+                            <p class="small text-muted">Berries, dark chocolate, green tea, olives, herbs, spices</p>
+                        </div>
+                        <div class="microbiome-food-option" onclick="selectMicrobiomeFood(this, 'prebiotics')">
+                            <h6>Prebiotic Foods</h6>
+                            <p class="small text-muted">Garlic, onions, leeks, asparagus, bananas, oats, apples</p>
+                        </div>
+                        <div class="microbiome-food-option" onclick="selectMicrobiomeFood(this, 'diverse')">
+                            <h6>Diverse Plant Foods</h6>
+                            <p class="small text-muted">Aim for 30+ different plant types weekly</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-sm btn-outline-danger" onclick="clearMicrobiomeSelections()">
+                            <i class="fas fa-times me-1"></i> Clear Selections
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="text-center">
+                    <h5 class="mb-3">Your Microbiome Score</h5>
+                    <div class="microbiome-score pulse" id="microbiomeScore">--</div>
+                    <div class="progress microbiome-progress mt-2 mb-3">
+                        <div class="progress-bar microbiome-progress-bar" id="microbiomeProgress" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <p class="text-muted" id="microbiomeFeedback">Select foods to calculate your score</p>
+                </div>
+                
+                <div id="microbiomeResult" style="display: none;">
+                    <div class="result-card good-result" id="goodResult" style="display: none;">
+                        <h4><i class="fas fa-check-circle me-2"></i>Yay! You're Taking Care of Your Gut!</h4>
+                        <p>Your food choices are excellent for supporting a healthy gut microbiome. Keep it up!</p>
+                    </div>
+                    
+                    <div class="result-card bad-result" id="badResult" style="display: none;">
+                        <h4><i class="fas fa-exclamation-triangle me-2"></i>Needs Improvement</h4>
+                        <p>Your current food choices could better support your gut microbiome. Try adding more:</p>
+                        <div id="improvementSuggestions" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tracker" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-heartbeat me-2"></i>Gut Feeling Tracker</h2>
+        <p class="text-center mb-4">After each meal, record how it made you feel to identify patterns.</p>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="tracker-form-card">
+                    <div class="mb-4">
+                        <label class="form-label">Select your meal:</label>
+                        <select class="form-select" id="mealSelect">
+                            <option value="" selected disabled>Choose a meal...</option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">What did you eat?</label>
+                        <input type="text" class="form-control" id="foodInput" placeholder="e.g., Chicken salad with quinoa">
+                        <small class="text-muted">Be specific for better tracking (include ingredients if possible)</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">How did this meal make you feel?</label>
+                        <div class="d-flex flex-wrap">
+                            <button class="gut-feeling-btn" data-feeling="great" onclick="selectFeeling(this)">
+                                <span class="feeling-emoji">😊</span> Energized
+                            </button>
+                            <button class="gut-feeling-btn" data-feeling="good" onclick="selectFeeling(this)">
+                                <span class="feeling-emoji">🙂</span> Comfortable
+                            </button>
+                            <button class="gut-feeling-btn" data-feeling="neutral" onclick="selectFeeling(this)">
+                                <span class="feeling-emoji">😐</span> Neutral
+                            </button>
+                            <button class="gut-feeling-btn" data-feeling="bloated" onclick="selectFeeling(this)">
+                                <span class="feeling-emoji">🤢</span> Bloated
+                            </button>
+                            <button class="gut-feeling-btn" data-feeling="discomfort" onclick="selectFeeling(this)">
+                                <span class="feeling-emoji">😖</span> Discomfort
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Additional notes (optional):</label>
+                        <textarea class="form-control" id="mealNotes" rows="3" placeholder="Any specific symptoms or observations?"></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-lg px-5" onclick="logMeal()">
+                            <i class="fas fa-save me-2"></i>Save Entry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="water" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-tint me-2"></i>Water Intake Tracker</h2>
+        <p class="text-center mb-4">Track your daily water consumption and see how it affects your body.</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-glass-water me-2"></i>Today's Water Intake</h5>
+                        <div class="text-center">
+                            <div class="water-percentage mb-3" id="waterPercentage">0%</div>
+                            <div class="body-visualization mb-4">
+                                <div class="body-outline"></div>
+                                <div class="water-fill" id="waterFill" style="height: 0%"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Add water consumed (in ml):</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" class="form-control" id="waterInput" placeholder="250">
+                                    <button class="btn btn-primary" type="button" onclick="addWater()">
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Your weight (kg):</label>
+                                <input type="number" class="form-control" id="userWeight" placeholder="70" value="70">
+                            </div>
+                            <button class="btn btn-outline-secondary" onclick="resetWater()">
+                                <i class="fas fa-redo me-1"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>Hydration Information</h5>
+                        <div id="hydrationInfo">
+                            <p>Your body is approximately <strong>60% water</strong>. Proper hydration is essential for:</p>
+                            <ul>
+                                <li>Digestion and gut health</li>
+                                <li>Nutrient absorption</li>
+                                <li>Temperature regulation</li>
+                                <li>Joint lubrication</li>
+                            </ul>
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                <strong>Recommended intake:</strong> About <span id="recommendedWater">2100</span> ml per day (30ml per kg of body weight)
+                            </div>
+                            <div class="hydration-feedback mt-3" id="hydrationFeedback">
+                                Start tracking your water intake to get personalized feedback.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dashboard" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-chart-line me-2"></i>Your Gut Health Dashboard</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h4 class="mb-3"><i class="fas fa-chart-line me-2"></i>Food Category Trends</h4>
+                    <div class="chart-container">
+                        <canvas id="foodCategoryChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h4 class="mb-3"><i class="fas fa-heartbeat me-2"></i>Health Metrics</h4>
+                    <div class="row">
+                        <div class="col-md-6 text-center mb-3">
+                            <div class="health-percentage" id="gutHealthPercentage">--%</div>
+                            <p class="small text-muted">Gut Health</p>
+                        </div>
+                        <div class="col-md-6 text-center mb-3">
+                            <div class="water-percentage" id="dashboardWaterPercentage">0%</div>
+                            <p class="small text-muted">Hydration</p>
+                        </div>
+                    </div>
+                    <div class="progress mt-3" style="height: 10px;">
+                        <div class="progress-bar bg-success" id="gutHealthProgress" style="width: 0%"></div>
+                    </div>
+                    <p class="text-muted small mt-2">Based on your recent meals and microbiome score</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h4 class="mb-3"><i class="fas fa-utensils me-2"></i>Recent Meals</h4>
+                    <div class="timeline" id="mealHistory">
+                        <!-- Timeline items will be added here -->
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h4 class="mb-3"><i class="fas fa-lightbulb me-2"></i>Insights & Recommendations</h4>
+                    <div class="card-body" id="gutHealthInsights">
+                        <p class="text-muted">No data yet. Log some meals to see insights.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recommendations" class="container tracker-section">
+        <h2 class="fw-bold text-center mb-4"><i class="fas fa-robot me-2"></i>AI-Powered Food Recommendations</h2>
+        <p class="text-center mb-4">Our hybrid recommendation system combines multiple AI models to suggest the best foods for your gut health.</p>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-project-diagram me-2"></i>Recommendation Models</h5>
+                        <div class="d-flex flex-wrap mt-3">
+                            <span class="badge model-badge bg-primary">Decision Trees</span>
+                            <span class="badge model-badge bg-secondary">AdaBoost</span>
+                            <span class="badge model-badge bg-success">Extra Trees</span>
+                            <span class="badge model-badge bg-danger">Naive Bayes</span>
+                            <span class="badge model-badge bg-warning">GBM</span>
+                            <span class="badge model-badge bg-info">DBN</span>
+                            <span class="badge model-badge bg-dark">GNN</span>
+                            <span class="badge model-badge bg-primary">Autoencoders</span>
+                            <span class="badge model-badge bg-secondary">RL Bandits</span>
+                            <span class="badge model-badge bg-success">Hybrid</span>
+                        </div>
+                        <p class="mt-3 small">Our system combines these models using:</p>
+                        <ul class="small">
+                            <li>Stacking Ensemble</li>
+                            <li>Weighted Blending</li>
+                            <li>Context-Aware Switching</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-utensils me-2"></i>Personalized Recommendations</h5>
+                        <div id="personalizedRecommendations">
+                            <div class="alert alert-info">
+                                Log some meals and microbiome data to get personalized recommendations.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container py-4">
+            <div class="row text-center">
+                <div class="col-12">
+                    <h5 class="mb-3">Gut Health Affirmations</h5>
+                    <p class="mb-2">🌿 Your gut is your second brain - nourish it well.</p>
+                    <p class="mb-2">🌟 Every meal is an opportunity to support your microbiome.</p>
+                    <p class="mb-2">🛡️ Listen to your body's signals - they guide you to better health.</p>
+                    <p class="mb-2">💖 A happy gut means a happier you.</p>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2023 Smart Plate AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    
+    <script>
+        // Data storage
+        let mealHistory = [];
+        let microbiomeHistory = [];
+        let selectedFeeling = null;
+        let selectedFoods = [];
+        let seasonalChart;
+        let gutHealthChart;
+        let foodCategoryChart;
+        let waterHistory = [];
+        let todaysWater = 0;
+        
+        // Microbiome food scores
+        const foodScores = {
+            'fermented': { score: 25, name: 'Fermented Foods' },
+            'highfiber': { score: 20, name: 'High-Fiber Foods' },
+            'polyphenols': { score: 18, name: 'Polyphenol-Rich Foods' },
+            'prebiotics': { score: 15, name: 'Prebiotic Foods' },
+            'diverse': { score: 22, name: 'Diverse Plant Foods' }
+        };
+        
+        // Food categories for line chart
+        const foodCategories = {
+            'grains': { name: 'Grains', color: '#f6c667' },
+            'vegetables': { name: 'Vegetables', color: '#6bbaa7' },
+            'fruits': { name: 'Fruits', color: '#ff7e5f' },
+            'protein': { name: 'Protein', color: '#4a6fa5' },
+            'dairy': { name: 'Dairy', color: '#b08ea2' },
+            'other': { name: 'Other', color: '#9d9d9d' }
+        };
+        
+        // Nutritional information for seasonal foods
+        const nutritionalInfo = {
+            // Vegetables
+            'Tomatoes': { calories: 18, nutrients: { 'Vitamin C': '28%', 'Vitamin K': '12%', 'Potassium': '5%' }, benefits: 'Rich in lycopene, supports heart health' },
+            'Zucchini': { calories: 17, nutrients: { 'Vitamin C': '29%', 'Vitamin B6': '10%', 'Manganese': '8%' }, benefits: 'Low calorie, high water content, aids digestion' },
+            'Bell Peppers': { calories: 31, nutrients: { 'Vitamin C': '169%', 'Vitamin A': '11%', 'Vitamin B6': '17%' }, benefits: 'High in antioxidants, supports immune system' },
+            'Eggplant': { calories: 25, nutrients: { 'Fiber': '10%', 'Manganese': '6%', 'Folate': '5%' }, benefits: 'Contains nasunin (antioxidant), supports brain health' },
+            'Kale': { calories: 49, nutrients: { 'Vitamin K': '684%', 'Vitamin C': '134%', 'Vitamin A': '206%' }, benefits: 'One of the most nutrient-dense foods, anti-inflammatory' },
+            'Brussels Sprouts': { calories: 56, nutrients: { 'Vitamin K': '274%', 'Vitamin C': '142%', 'Folate': '15%' }, benefits: 'High in fiber, supports detoxification' },
+            'Squash': { calories: 40, nutrients: { 'Vitamin C': '35%', 'Vitamin B6': '12%', 'Manganese': '16%' }, benefits: 'Good for eye health, supports immune function' },
+            'Sweet Potatoes': { calories: 90, nutrients: { 'Vitamin A': '384%', 'Vitamin C': '33%', 'Manganese': '28%' }, benefits: 'Rich in beta-carotene, supports vision' },
+            'Okra': { calories: 33, nutrients: { 'Vitamin K': '31%', 'Vitamin C': '26%', 'Folate': '15%' }, benefits: 'High in soluble fiber, helps regulate blood sugar' },
+            'Collards': { calories: 49, nutrients: { 'Vitamin K': '770%', 'Vitamin A': '133%', 'Vitamin C': '58%' }, benefits: 'Supports bone health, rich in calcium' },
+            
+            // Fruits
+            'Strawberries': { calories: 32, nutrients: { 'Vitamin C': '149%', 'Manganese': '19%', 'Folate': '6%' }, benefits: 'High in antioxidants, may improve heart health' },
+            'Peaches': { calories: 59, nutrients: { 'Vitamin C': '17%', 'Vitamin A': '10%', 'Potassium': '8%' }, benefits: 'Supports skin health, aids digestion' },
+            'Plums': { calories: 46, nutrients: { 'Vitamin C': '15%', 'Vitamin K': '10%', 'Potassium': '4%' }, benefits: 'Good for bone health, may help with constipation' },
+            'Grapes': { calories: 69, nutrients: { 'Vitamin K': '18%', 'Vitamin C': '5%', 'Copper': '6%' }, benefits: 'Contains resveratrol, supports heart health' },
+            'Apples': { calories: 52, nutrients: { 'Fiber': '14%', 'Vitamin C': '8%', 'Potassium': '3%' }, benefits: 'High in fiber, may support weight loss' },
+            'Pears': { calories: 57, nutrients: { 'Fiber': '18%', 'Vitamin C': '7%', 'Copper': '5%' }, benefits: 'Good for gut health, may reduce inflammation' },
+            'Blueberries': { calories: 57, nutrients: { 'Vitamin K': '24%', 'Vitamin C': '16%', 'Manganese': '17%' }, benefits: 'Highest antioxidant capacity of all fruits' },
+            'Blackberries': { calories: 43, nutrients: { 'Vitamin C': '35%', 'Vitamin K': '25%', 'Manganese': '32%' }, benefits: 'High in fiber, supports brain health' },
+            'Oranges': { calories: 47, nutrients: { 'Vitamin C': '88%', 'Fiber': '9%', 'Thiamine': '8%' }, benefits: 'Boosts immunity, supports skin health' },
+            'Watermelons': { calories: 30, nutrients: { 'Vitamin C': '14%', 'Vitamin A': '11%', 'Potassium': '4%' }, benefits: 'Hydrating, contains citrulline (heart health)' }
+        };
+        
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initFoodCategoryChart();
+            updateDashboard();
+            updateWaterVisualization();
+            document.getElementById('userWeight').addEventListener('change', updateRecommendedWater);
+            updateRecommendedWater();
+        });
+        
+        function loadSeasonalFoods() {
+            const state = document.getElementById('stateSelect').value;
+            
+            if (!state) {
+                alert('Please select a state first');
+                return;
+            }
+            
+            // Comprehensive seasonal data for all states
+            const seasonalData = {
+                'AL': { vegetables: ['Collards', 'Sweet Potatoes', 'Turnips', 'Mustard Greens'], fruits: ['Peaches', 'Blackberries', 'Muscadines'] },
+                'AK': { vegetables: ['Kale', 'Cabbage', 'Potatoes', 'Carrots'], fruits: ['Blueberries', 'Raspberries', 'Cloudberries'] },
+                'AZ': { vegetables: ['Chilies', 'Corn', 'Cucumbers', 'Eggplant'], fruits: ['Dates', 'Citrus', 'Pomegranates'] },
+                'AR': { vegetables: ['Okra', 'Sweet Potatoes', 'Green Beans', 'Peppers'], fruits: ['Watermelons', 'Peaches', 'Blackberries'] },
+                'CA': { vegetables: ['Tomatoes', 'Zucchini', 'Bell Peppers', 'Eggplant'], fruits: ['Strawberries', 'Peaches', 'Plums', 'Grapes'] },
+                'CO': { vegetables: ['Kale', 'Spinach', 'Beets', 'Carrots'], fruits: ['Cherries', 'Apples', 'Peaches'] },
+                'CT': { vegetables: ['Squash', 'Pumpkins', 'Brussels Sprouts', 'Kale'], fruits: ['Apples', 'Pears', 'Blueberries'] },
+                'DE': { vegetables: ['Tomatoes', 'Corn', 'Cucumbers', 'Squash'], fruits: ['Peaches', 'Apples', 'Blueberries'] },
+                'FL': { vegetables: ['Tomatoes', 'Corn', 'Cucumbers', 'Squash'], fruits: ['Oranges', 'Grapefruit', 'Mangoes'] },
+                'GA': { vegetables: ['Collards', 'Sweet Potatoes', 'Okra', 'Peppers'], fruits: ['Peaches', 'Blueberries', 'Muscadines'] },
+                'HI': { vegetables: ['Taro', 'Sweet Potatoes', 'Bamboo Shoots', 'Eggplant'], fruits: ['Pineapple', 'Papaya', 'Mangoes'] },
+                'ID': { vegetables: ['Potatoes', 'Beets', 'Carrots', 'Cabbage'], fruits: ['Cherries', 'Apples', 'Huckleberries'] },
+                'IL': { vegetables: ['Pumpkins', 'Squash', 'Brussels Sprouts', 'Cauliflower'], fruits: ['Apples', 'Pears', 'Grapes'] },
+                'IN': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Apples', 'Blueberries', 'Melons'] },
+                'IA': { vegetables: ['Sweet Corn', 'Potatoes', 'Cabbage', 'Carrots'], fruits: ['Apples', 'Cherries', 'Grapes'] },
+                'KS': { vegetables: ['Sweet Corn', 'Tomatoes', 'Peppers', 'Onions'], fruits: ['Watermelons', 'Peaches', 'Apples'] },
+                'KY': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Blackberries', 'Apples', 'Peaches'] },
+                'LA': { vegetables: ['Okra', 'Sweet Potatoes', 'Eggplant', 'Peppers'], fruits: ['Satsumas', 'Figs', 'Blackberries'] },
+                'ME': { vegetables: ['Potatoes', 'Squash', 'Kale', 'Cabbage'], fruits: ['Blueberries', 'Apples', 'Cranberries'] },
+                'MD': { vegetables: ['Tomatoes', 'Corn', 'Cucumbers', 'Squash'], fruits: ['Apples', 'Peaches', 'Blueberries'] },
+                'MA': { vegetables: ['Squash', 'Pumpkins', 'Brussels Sprouts', 'Kale'], fruits: ['Cranberries', 'Apples', 'Blueberries'] },
+                'MI': { vegetables: ['Potatoes', 'Carrots', 'Beets', 'Cabbage'], fruits: ['Cherries', 'Apples', 'Blueberries'] },
+                'MN': { vegetables: ['Potatoes', 'Sweet Corn', 'Carrots', 'Cabbage'], fruits: ['Apples', 'Blueberries', 'Grapes'] },
+                'MS': { vegetables: ['Collards', 'Sweet Potatoes', 'Okra', 'Peppers'], fruits: ['Muscadines', 'Blackberries', 'Peaches'] },
+                'MO': { vegetables: ['Sweet Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Blackberries', 'Apples', 'Peaches'] },
+                'MT': { vegetables: ['Potatoes', 'Carrots', 'Beets', 'Cabbage'], fruits: ['Cherries', 'Huckleberries', 'Apples'] },
+                'NE': { vegetables: ['Sweet Corn', 'Tomatoes', 'Peppers', 'Onions'], fruits: ['Apples', 'Cherries', 'Grapes'] },
+                'NV': { vegetables: ['Chilies', 'Corn', 'Cucumbers', 'Eggplant'], fruits: ['Dates', 'Pomegranates', 'Apples'] },
+                'NH': { vegetables: ['Squash', 'Pumpkins', 'Brussels Sprouts', 'Kale'], fruits: ['Apples', 'Blueberries', 'Cranberries'] },
+                'NJ': { vegetables: ['Tomatoes', 'Corn', 'Cucumbers', 'Squash'], fruits: ['Blueberries', 'Peaches', 'Apples'] },
+                'NM': { vegetables: ['Chilies', 'Corn', 'Cucumbers', 'Eggplant'], fruits: ['Apples', 'Peaches', 'Grapes'] },
+                'NY': { vegetables: ['Kale', 'Brussels Sprouts', 'Squash', 'Potatoes'], fruits: ['Apples', 'Pears', 'Cranberries'] },
+                'NC': { vegetables: ['Collards', 'Sweet Potatoes', 'Okra', 'Peppers'], fruits: ['Blueberries', 'Peaches', 'Apples'] },
+                'ND': { vegetables: ['Potatoes', 'Carrots', 'Beets', 'Cabbage'], fruits: ['Apples', 'Cherries', 'Grapes'] },
+                'OH': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Apples', 'Peaches', 'Blackberries'] },
+                'OK': { vegetables: ['Okra', 'Sweet Potatoes', 'Green Beans', 'Peppers'], fruits: ['Peaches', 'Blackberries', 'Apples'] },
+                'OR': { vegetables: ['Kale', 'Brussels Sprouts', 'Squash', 'Potatoes'], fruits: ['Pears', 'Cherries', 'Blackberries'] },
+                'PA': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Apples', 'Peaches', 'Blueberries'] },
+                'RI': { vegetables: ['Squash', 'Pumpkins', 'Brussels Sprouts', 'Kale'], fruits: ['Apples', 'Blueberries', 'Cranberries'] },
+                'SC': { vegetables: ['Collards', 'Sweet Potatoes', 'Okra', 'Peppers'], fruits: ['Peaches', 'Blackberries', 'Muscadines'] },
+                'SD': { vegetables: ['Potatoes', 'Sweet Corn', 'Carrots', 'Cabbage'], fruits: ['Apples', 'Cherries', 'Grapes'] },
+                'TN': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Blackberries', 'Apples', 'Peaches'] },
+                'TX': { vegetables: ['Okra', 'Sweet Potatoes', 'Green Beans', 'Peppers'], fruits: ['Watermelons', 'Peaches', 'Figs'] },
+                'UT': { vegetables: ['Chilies', 'Corn', 'Cucumbers', 'Eggplant'], fruits: ['Cherries', 'Apples', 'Peaches'] },
+                'VT': { vegetables: ['Potatoes', 'Squash', 'Kale', 'Cabbage'], fruits: ['Apples', 'Blueberries', 'Cranberries'] },
+                'VA': { vegetables: ['Collards', 'Sweet Potatoes', 'Okra', 'Peppers'], fruits: ['Apples', 'Peaches', 'Blackberries'] },
+                'WA': { vegetables: ['Kale', 'Brussels Sprouts', 'Squash', 'Potatoes'], fruits: ['Apples', 'Pears', 'Cherries'] },
+                'WV': { vegetables: ['Corn', 'Tomatoes', 'Green Beans', 'Peppers'], fruits: ['Apples', 'Peaches', 'Blackberries'] },
+                'WI': { vegetables: ['Potatoes', 'Sweet Corn', 'Carrots', 'Cabbage'], fruits: ['Cranberries', 'Apples', 'Cherries'] },
+                'WY': { vegetables: ['Potatoes', 'Carrots', 'Beets', 'Cabbage'], fruits: ['Cherries', 'Apples', 'Huckleberries'] }
+            };
+            
+            const recommendedProduce = seasonalData[state] || seasonalData['CA'];
+            
+            // Update UI
+            document.getElementById('seasonalChartContainer').style.display = 'block';
+            document.getElementById('seasonalRecommendations').style.display = 'flex';
+            
+            // Populate vegetable list with nutritional info
+            const vegetableList = document.getElementById('vegetableList');
+            vegetableList.innerHTML = '';
+            recommendedProduce.vegetables.forEach(veg => {
+                const info = nutritionalInfo[veg] || { calories: 'N/A', nutrients: {}, benefits: 'Nutritional information not available' };
+                
+                let nutrientsHtml = '';
+                for (const [nutrient, value] of Object.entries(info.nutrients)) {
+                    nutrientsHtml += `<span class="badge bg-secondary me-1 mb-1">${nutrient}: ${value}</span>`;
+                }
+                
+                vegetableList.innerHTML += `
+                    <div class="nutrition-card">
+                        <h6>${veg} <span class="badge bg-success">${info.calories} kcal/100g</span></h6>
+                        <div class="nutrients mb-2">${nutrientsHtml}</div>
+                        <p class="small mb-1"><span class="nutrient">Benefits:</span> ${info.benefits}</p>
+                    </div>
+                `;
+            });
+            
+            // Populate fruit list with nutritional info
+            const fruitList = document.getElementById('fruitList');
+            fruitList.innerHTML = '';
+            recommendedProduce.fruits.forEach(fruit => {
+                const info = nutritionalInfo[fruit] || { calories: 'N/A', nutrients: {}, benefits: 'Nutritional information not available' };
+                
+                let nutrientsHtml = '';
+                for (const [nutrient, value] of Object.entries(info.nutrients)) {
+                    nutrientsHtml += `<span class="badge bg-info text-dark me-1 mb-1">${nutrient}: ${value}</span>`;
+                }
+                
+                fruitList.innerHTML += `
+                    <div class="nutrition-card">
+                        <h6>${fruit} <span class="badge bg-success">${info.calories} kcal/100g</span></h6>
+                        <div class="nutrients mb-2">${nutrientsHtml}</div>
+                        <p class="small mb-1"><span class="nutrient">Benefits:</span> ${info.benefits}</p>
+                    </div>
+                `;
+            });
+            
+            // Update chart
+            updateSeasonalChart(recommendedProduce.vegetables, recommendedProduce.fruits, state);
+        }
+        
+        function updateSeasonalChart(vegetables, fruits, state) {
+            const ctx = document.getElementById('seasonalChart').getContext('2d');
+            
+            if (seasonalChart) {
+                seasonalChart.destroy();
+            }
+            
+            seasonalChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vegetables', 'Fruits'],
+                    datasets: [{
+                        label: 'Seasonal Produce',
+                        data: [vegetables.length, fruits.length],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(54, 162, 235, 0.6)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Seasonal Produce for ${state}`
+                        }
+                    }
+                }
+            });
+        }
+        
+        function initFoodCategoryChart() {
+            const ctx = document.getElementById('foodCategoryChart').getContext('2d');
+            
+            foodCategoryChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Meals'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            updateFoodCategoryChart();
+        }
+        
+        function updateFoodCategoryChart() {
+            // Categorize foods from meal history by week
+            const weeklyData = {};
+            const now = new Date();
+            const oneWeek = 7 * 24 * 60 * 60 * 1000;
+            
+            // Initialize weekly data structure
+            for (let i = 4; i >= 0; i--) {
+                const weekStart = new Date(now.getTime() - (i * oneWeek));
+                const weekLabel = `Week ${5 - i}`;
+                weeklyData[weekLabel] = {
+                    'grains': 0,
+                    'vegetables': 0,
+                    'fruits': 0,
+                    'protein': 0,
+                    'dairy': 0,
+                    'other': 0
+                };
+            }
+            
+            // Categorize meals with improved logic
+            mealHistory.forEach(meal => {
+                const mealDate = new Date(meal.date);
+                const weeksAgo = Math.floor((now - mealDate) / oneWeek);
+                
+                if (weeksAgo >= 0 && weeksAgo < 5) {
+                    const weekLabel = `Week ${5 - weeksAgo}`;
+                    const food = meal.food.toLowerCase();
+                    let categorized = false;
+                    
+                    // Check for grains
+                    if (food.includes('bread') || food.includes('rice') || food.includes('pasta') || 
+                        food.includes('oat') || food.includes('quinoa') || food.includes('wheat') || 
+                        food.includes('cereal') || food.includes('barley') || food.includes('rye')) {
+                        weeklyData[weekLabel].grains++;
+                        categorized = true;
+                    }
+                    
+                    // Check for vegetables
+                    if (!categorized && (food.includes('vegetable') || food.includes('salad') || 
+                        food.includes('spinach') || food.includes('kale') || food.includes('broccoli') || 
+                        food.includes('carrot') || food.includes('lettuce') || food.includes('cucumber') || 
+                        food.includes('pepper') || food.includes('onion') || food.includes('garlic'))) {
+                        weeklyData[weekLabel].vegetables++;
+                        categorized = true;
+                    }
+                    
+                    // Check for fruits
+                    if (!categorized && (food.includes('fruit') || food.includes('apple') || 
+                        food.includes('banana') || food.includes('berry') || food.includes('orange') || 
+                        food.includes('grape') || food.includes('melon') || food.includes('pear') || 
+                        food.includes('peach') || food.includes('plum'))) {
+                        weeklyData[weekLabel].fruits++;
+                        categorized = true;
+                    }
+                    
+                    // Check for protein
+                    if (!categorized && (food.includes('chicken') || food.includes('beef') || 
+                        food.includes('fish') || food.includes('meat') || food.includes('egg') || 
+                        food.includes('tofu') || food.includes('tempeh') || food.includes('beans') || 
+                        food.includes('lentil') || food.includes('chickpea') || food.includes('nut') || 
+                        food.includes('seed') || food.includes('steak') || food.includes('burger') || 
+                        food.includes('sausage'))) {
+                        weeklyData[weekLabel].protein++;
+                        categorized = true;
+                    }
+                    
+                    // Check for dairy
+                    if (!categorized && (food.includes('milk') || food.includes('cheese') || 
+                        food.includes('yogurt') || food.includes('kefir') || food.includes('cream') || 
+                        food.includes('butter') || food.includes('ghee'))) {
+                        weeklyData[weekLabel].dairy++;
+                        categorized = true;
+                    }
+                    
+                    // If still not categorized, mark as other
+                    if (!categorized) {
+                        weeklyData[weekLabel].other++;
+                    }
+                }
+            });
+            
+            // Prepare chart data
+            const labels = Object.keys(weeklyData);
+            const datasets = [];
+            
+            Object.entries(foodCategories).forEach(([key, category]) => {
+                const data = labels.map(week => weeklyData[week][key]);
+                
+                // Only add to chart if there's data for this category
+                if (data.some(value => value > 0)) {
+                    datasets.push({
+                        label: category.name,
+                        data: data,
+                        borderColor: category.color,
+                        backgroundColor: category.color + '40',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: false
+                    });
+                }
+            });
+            
+            // Update chart
+            foodCategoryChart.data.labels = labels;
+            foodCategoryChart.data.datasets = datasets;
+            foodCategoryChart.update();
+        }
+        
+        function selectMicrobiomeFood(element, type) {
+            element.classList.toggle('selected');
+            
+            if (element.classList.contains('selected')) {
+                selectedFoods.push(type);
+            } else {
+                selectedFoods = selectedFoods.filter(t => t !== type);
+            }
+            
+            calculateMicrobiomeScore();
+        }
+        
+        function clearMicrobiomeSelections() {
+            document.querySelectorAll('.microbiome-food-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            selectedFoods = [];
+            calculateMicrobiomeScore();
+        }
+        
+        function calculateMicrobiomeScore() {
+            const resultContainer = document.getElementById('microbiomeResult');
+            
+            if (selectedFoods.length === 0) {
+                document.getElementById('microbiomeScore').textContent = '--';
+                document.getElementById('microbiomeProgress').style.width = '0%';
+                document.getElementById('microbiomeFeedback').textContent = 'Select foods to calculate your score';
+                resultContainer.style.display = 'none';
+                return;
+            }
+            
+            // Calculate score
+            let score = 0;
+            selectedFoods.forEach(type => {
+                score += foodScores[type].score;
+            });
+            
+            // Average and adjust score to 0-100 scale
+            score = Math.min(100, Math.round(score / selectedFoods.length * 3.5));
+            
+            // Update UI
+            document.getElementById('microbiomeScore').textContent = score;
+            document.getElementById('microbiomeProgress').style.width = `${score}%`;
+            
+            // Show appropriate result
+            resultContainer.style.display = 'block';
+            
+            if (score >= 70) {
+                document.getElementById('goodResult').style.display = 'block';
+                document.getElementById('badResult').style.display = 'none';
+                document.getElementById('microbiomeFeedback').innerHTML = 
+                    '<span class="text-success">Excellent! Your food choices are great for gut health.</span>';
+            } else {
+                document.getElementById('goodResult').style.display = 'none';
+                document.getElementById('badResult').style.display = 'block';
+                document.getElementById('microbiomeFeedback').innerHTML = 
+                    '<span class="text-warning">Good start, but could be better for optimal gut health.</span>';
+                
+                // Generate improvement suggestions
+                const suggestions = document.getElementById('improvementSuggestions');
+                suggestions.innerHTML = '';
+                
+                const missingTypes = Object.keys(foodScores).filter(type => 
+                    !selectedFoods.includes(type)
+                );
+                
+                if (missingTypes.length > 0) {
+                    const ul = document.createElement('ul');
+                    missingTypes.forEach(type => {
+                        const li = document.createElement('li');
+                        li.textContent = foodScores[type].name;
+                        ul.appendChild(li);
+                    });
+                    suggestions.appendChild(ul);
+                }
+            }
+            
+            // Store in history
+            const newEntry = {
+                date: new Date(),
+                score: score,
+                foods: selectedFoods.map(t => foodScores[t].name)
+            };
+            
+            microbiomeHistory.unshift(newEntry);
+            updateDashboard();
+            generateRecommendations();
+        }
+        
+        function selectFeeling(button) {
+            document.querySelectorAll('.gut-feeling-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            button.classList.add('selected');
+            selectedFeeling = button.getAttribute('data-feeling');
+        }
+        
+        function logMeal() {
+            const meal = document.getElementById('mealSelect').value;
+            const food = document.getElementById('foodInput').value;
+            const notes = document.getElementById('mealNotes').value;
+            
+            if (!meal || !food || !selectedFeeling) {
+                alert('Please select a meal, enter what you ate, and how you felt.');
+                return;
+            }
+            
+            const newEntry = {
+                date: new Date(),
+                meal: meal.charAt(0).toUpperCase() + meal.slice(1),
+                food: food,
+                feeling: selectedFeeling,
+                notes: notes
+            };
+            
+            mealHistory.unshift(newEntry);
+            
+            // Reset form
+            document.getElementById('mealSelect').value = '';
+            document.getElementById('foodInput').value = '';
+            document.getElementById('mealNotes').value = '';
+            document.querySelectorAll('.gut-feeling-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            selectedFeeling = null;
+            
+            // Update UI
+            updateDashboard();
+            generateRecommendations();
+        }
+        
+        function updateDashboard() {
+            updateFoodCategoryChart();
+            updateGutHealthPercentage();
+            renderMealHistory();
+            renderInsights();
+            updateWaterVisualization();
+        }
+        
+        function updateGutHealthPercentage() {
+            if (mealHistory.length === 0 && microbiomeHistory.length === 0) {
+                document.getElementById('gutHealthPercentage').textContent = '--%';
+                document.getElementById('gutHealthProgress').style.width = '0%';
+                return;
+            }
+            
+            // Calculate gut feeling percentage
+            const feelingScores = {
+                'great': 90,
+                'good': 70,
+                'neutral': 50,
+                'bloated': 30,
+                'discomfort': 10
+            };
+            
+            let gutFeelingPercentage = 50;
+            if (mealHistory.length > 0) {
+                const totalFeelingScore = mealHistory.reduce((sum, meal) => {
+                    return sum + (feelingScores[meal.feeling] || 50);
+                }, 0);
+                gutFeelingPercentage = Math.round(totalFeelingScore / mealHistory.length);
+            }
+            
+            // Calculate microbiome percentage
+            let microbiomePercentage = 50;
+            if (microbiomeHistory.length > 0) {
+                const totalMicrobiomeScore = microbiomeHistory.reduce((sum, entry) => {
+                    return sum + entry.score;
+                }, 0);
+                microbiomePercentage = Math.round(totalMicrobiomeScore / microbiomeHistory.length);
+            }
+            
+            // Combine scores (weighted average)
+            const combinedPercentage = Math.round((gutFeelingPercentage * 0.6 + microbiomePercentage * 0.4));
+            
+            // Update UI
+            document.getElementById('gutHealthPercentage').textContent = `${combinedPercentage}%`;
+            document.getElementById('gutHealthProgress').style.width = `${combinedPercentage}%`;
+        }
+        
+        function renderMealHistory() {
+            const container = document.getElementById('mealHistory');
+            container.innerHTML = '';
+            
+            if (mealHistory.length === 0) {
+                container.innerHTML = '<p class="text-muted">No meals logged yet.</p>';
+                return;
+            }
+            
+            // Show last 5 meals
+            const recentMeals = mealHistory.slice(0, 5);
+            
+            recentMeals.forEach(meal => {
+                const feelingIcons = {
+                    'great': 'fa-laugh-beam text-success',
+                    'good': 'fa-smile text-primary',
+                    'neutral': 'fa-meh text-secondary',
+                    'bloated': 'fa-tint text-warning',
+                    'discomfort': 'fa-frown text-danger'
+                };
+                
+                const item = document.createElement('div');
+                item.className = 'd-flex justify-content-between align-items-center mb-3 pb-2 border-bottom';
+                item.innerHTML = `
+                    <div>
+                        <strong>${meal.meal}: ${meal.food}</strong>
+                        <div class="text-muted small">${meal.date.toLocaleTimeString()}</div>
+                    </div>
+                    <i class="fas ${feelingIcons[meal.feeling]} fa-lg"></i>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+        
+        function renderInsights() {
+            const container = document.getElementById('gutHealthInsights');
+            
+            if (mealHistory.length === 0 && microbiomeHistory.length === 0) {
+                container.innerHTML = '<p class="text-muted">No data yet. Log some meals to see insights.</p>';
+                return;
+            }
+            
+            let insightsHTML = '<div class="row">';
+            
+            // Gut feeling insights
+            if (mealHistory.length > 0) {
+                const greatMeals = mealHistory.filter(meal => meal.feeling === 'great').length;
+                const discomfortMeals = mealHistory.filter(meal => meal.feeling === 'discomfort' || meal.feeling === 'bloated').length;
+                const totalMeals = mealHistory.length;
+                
+                insightsHTML += `
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-heartbeat me-2"></i>Gut Feeling</h5>
+                        <ul>
+                            <li>Positive meals: <strong>${Math.round((greatMeals / totalMeals) * 100)}%</strong></li>
+                            <li>Negative meals: <strong>${Math.round((discomfortMeals / totalMeals) * 100)}%</strong></li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Microbiome insights
+            if (microbiomeHistory.length > 0) {
+                const avgScore = microbiomeHistory.reduce((sum, entry) => sum + entry.score, 0) / microbiomeHistory.length;
+                
+                insightsHTML += `
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-bacteria me-2"></i>Microbiome</h5>
+                        <ul>
+                            <li>Average score: <strong>${Math.round(avgScore)}/100</strong></li>
+                            ${avgScore > 70 ? '<li>Excellent gut health!</li>' : ''}
+                            ${avgScore < 50 ? '<li>Try adding more fermented foods</li>' : ''}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Water insights
+            if (waterHistory.length > 0) {
+                const today = new Date().toDateString();
+                const todayWater = waterHistory.filter(entry => new Date(entry.date).toDateString() === today)
+                    .reduce((sum, entry) => sum + entry.amount, 0);
+                const weight = parseFloat(document.getElementById('userWeight').value) || 70;
+                const recommended = weight * 30;
+                
+                insightsHTML += `
+                    <div class="col-12 mt-3">
+                        <h5><i class="fas fa-tint me-2"></i>Hydration</h5>
+                        <ul>
+                            <li>Today's water: <strong>${todayWater}ml</strong> of ${recommended}ml recommended</li>
+                            ${todayWater >= recommended ? '<li>Great job staying hydrated!</li>' : '<li>Try to drink more water</li>'}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            insightsHTML += '</div>';
+            container.innerHTML = insightsHTML;
+        }
+        
+        function generateRecommendations() {
+            const container = document.getElementById('personalizedRecommendations');
+            
+            if (mealHistory.length === 0 && microbiomeHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        Log some meals and microbiome data to get personalized recommendations.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get recent microbiome score
+            const recentMicrobiomeScore = microbiomeHistory.length > 0 ? microbiomeHistory[0].score : 50;
+            
+            // Get recent meal feelings
+            const recentMeals = mealHistory.slice(0, 5);
+            const positiveMeals = recentMeals.filter(meal => meal.feeling === 'great' || meal.feeling === 'good').length;
+            const negativeMeals = recentMeals.filter(meal => meal.feeling === 'bloated' || meal.feeling === 'discomfort').length;
+            
+            // Generate recommendations based on data
+            let recommendations = [];
+            
+            // Basic decision tree recommendations
+            if (recentMicrobiomeScore < 50) {
+                recommendations.push({
+                    title: "Boost Your Microbiome",
+                    description: "Try adding more fermented foods like yogurt, kefir, or kimchi to improve your gut health score.",
+                    model: "Decision Tree"
+                });
+            }
+            
+            if (negativeMeals > positiveMeals) {
+                recommendations.push({
+                    title: "Easier to Digest Meals",
+                    description: "Consider simpler meals with cooked vegetables and lean proteins that are easier on your digestive system.",
+                    model: "AdaBoost"
+                });
+            }
+            
+            // Content-based filtering
+            if (mealHistory.length > 0) {
+                // Find most common positive meal components
+                const positiveFoods = {};
+                mealHistory.filter(meal => meal.feeling === 'great' || meal.feeling === 'good')
+                    .forEach(meal => {
+                        const words = meal.food.toLowerCase().split(' ');
+                        words.forEach(word => {
+                            if (word.length > 3 && !['with', 'and', 'the'].includes(word)) {
+                                positiveFoods[word] = (positiveFoods[word] || 0) + 1;
+                            }
+                        });
+                    });
+                
+                const topPositiveFoods = Object.entries(positiveFoods)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3)
+                    .map(item => item[0]);
+                
+                if (topPositiveFoods.length > 0) {
+                    recommendations.push({
+                        title: "More of What Works",
+                        description: `Our models suggest you feel best with ${topPositiveFoods.join(', ')}. Try incorporating these into more meals.`,
+                        model: "Content-Based Filtering"
+                    });
+                }
+            }
+            
+            // Seasonal recommendations
+            const state = document.getElementById('stateSelect').value;
+            if (state) {
+                recommendations.push({
+                    title: "Seasonal Superfoods",
+                    description: "Check the seasonal foods section for fresh, local options that are at their nutritional peak.",
+                    model: "Context-Aware"
+                });
+            }
+            
+            // Hybrid ensemble recommendation
+            if (recommendations.length > 0) {
+                recommendations.push({
+                    title: "Balanced Meal Plan",
+                    description: "Our hybrid model recommends a balanced approach with fermented foods, diverse plants, and lean proteins.",
+                    model: "Hybrid Ensemble"
+                });
+            }
+            
+            // Display recommendations
+            if (recommendations.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-info">
+                        Keep logging meals to get more personalized recommendations.
+                    </div>
+                `;
+            } else {
+                let recommendationsHTML = '<div class="row">';
+                
+                recommendations.forEach(rec => {
+                    recommendationsHTML += `
+                        <div class="col-md-6 mb-3">
+                            <div class="card recommendation-card h-100">
+                                <div class="card-body">
+                                    <h5>${rec.title}</h5>
+                                    <p>${rec.description}</p>
+                                    <div class="mt-2">
+                                        <span class="badge bg-secondary">${rec.model}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                recommendationsHTML += '</div>';
+                container.innerHTML = recommendationsHTML;
+            }
+        }
+        
+        // Water tracking functions
+        function addWater() {
+            const amount = parseInt(document.getElementById('waterInput').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount of water');
+                return;
+            }
+            
+            const weight = parseFloat(document.getElementById('userWeight').value) || 70;
+            const recommended = weight * 30;
+            
+            todaysWater += amount;
+            waterHistory.push({
+                date: new Date(),
+                amount: amount
+            });
+            
+            updateWaterVisualization();
+            updateDashboard();
+        }
+        
+        function resetWater() {
+            todaysWater = 0;
+            updateWaterVisualization();
+            updateDashboard();
+        }
+        
+        function updateWaterVisualization() {
+            const weight = parseFloat(document.getElementById('userWeight').value) || 70;
+            const recommended = weight * 30;
+            const percentage = Math.min(100, Math.round((todaysWater / recommended) * 100));
+            
+            document.getElementById('waterPercentage').textContent = `${percentage}%`;
+            document.getElementById('waterFill').style.height = `${percentage}%`;
+            document.getElementById('dashboardWaterPercentage').textContent = `${percentage}%`;
+            
+            // Update feedback
+            const feedback = document.getElementById('hydrationFeedback');
+            if (percentage >= 100) {
+                feedback.innerHTML = '<span class="text-success"><i class="fas fa-check-circle me-2"></i>Great job! You\'ve met your water intake goal for today.</span>';
+            } else if (percentage >= 75) {
+                feedback.innerHTML = '<span class="text-primary"><i class="fas fa-thumbs-up me-2"></i>You\'re doing well with hydration. Just a bit more to reach your goal.</span>';
+            } else if (percentage >= 50) {
+                feedback.innerHTML = '<span class="text-warning"><i class="fas fa-glass-water me-2"></i>You\'re about halfway to your daily water goal. Keep drinking!</span>';
+            } else {
+                feedback.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>You need to drink more water to stay properly hydrated.</span>';
+            }
+        }
+        
+        function updateRecommendedWater() {
+            const weight = parseFloat(document.getElementById('userWeight').value) || 70;
+            const recommended = weight * 30;
+            document.getElementById('recommendedWater').textContent = recommended;
+            updateWaterVisualization();
+        }
+    </script>
+</body>
+</html>
